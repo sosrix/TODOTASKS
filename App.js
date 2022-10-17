@@ -1,20 +1,34 @@
-import { StatusBar } from 'expo-status-bar';
-import { StyleSheet, Text, View } from 'react-native';
+import React, { useState } from "react";
+import { Provider } from "react-redux";
+
+import { store } from "./components/store/store";
+import TasksContainer from "./components/TasksContainer";
+import Auth from "./components/Auth";
+import BottomBar from "./components/BottomBar";
+import Addtask from "./components/Addtask";
 
 export default function App() {
-  return (
-    <View style={styles.container}>
-      <Text>Open up App.js to start working on your app!</Text>
-      <StatusBar style="auto" />
-    </View>
-  );
-}
+  const [logged, setLogged] = useState(false);
+  const [openTab, setOpenTab] = useState(0);
+  const [itemToEdit, setItemToEdit] = useState(null);
 
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#fff',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-});
+  function onTabPress(route) {
+    setOpenTab(route);
+  }
+
+  if (!logged) {
+    return (
+      <Provider store={store}>
+        {openTab === 0 && (
+          <TasksContainer onDelete={onTabPress} editItem={setItemToEdit} />
+        )}
+        {openTab === 1 && (
+          <Addtask onSave={onTabPress} itemToEdit={itemToEdit} />
+        )}
+        <BottomBar onTab={onTabPress} />
+      </Provider>
+    );
+  } else {
+    return <Auth setLogged={setLogged} />;
+  }
+}
