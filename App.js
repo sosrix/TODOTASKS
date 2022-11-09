@@ -16,7 +16,7 @@ export default function App() {
     setOpenTab(route);
   }
 
-  if (!logged) {
+  if (logged) {
     return (
       <Provider store={store}>
         {openTab === 0 && (
